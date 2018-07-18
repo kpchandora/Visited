@@ -26,7 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-    
+
     private static final int RC_SIGN_IN = 0;
     private FirebaseAuth mFirebaseAuth;
     private GoogleApiClient mGoogleApiClient;
@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "onAuthStateChanged: ");
 
                 if (mUser != null) {
+                    Log.i(TAG, "onAuthStateChanged: " + mUser.getEmail());
                     startActivity(new Intent(LoginActivity.this, MainActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     finish();

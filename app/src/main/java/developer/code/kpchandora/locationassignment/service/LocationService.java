@@ -1,22 +1,20 @@
 package developer.code.kpchandora.locationassignment.service;
 
-import android.Manifest;
 import android.app.Service;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -24,6 +22,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +31,8 @@ import developer.code.kpchandora.locationassignment.MainActivity;
 import developer.code.kpchandora.locationassignment.receiver.ConnectivityReceiver;
 import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
+import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
+import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
 public class LocationService extends Service {
 
@@ -42,10 +44,12 @@ public class LocationService extends Service {
     private LocationRequest locationRequest;
     private boolean isNetworkAvailable;
     private LocationDatabase database;
+    private Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         registerReceiver(connectionReceiver, new IntentFilter(CONNECTION_BROADCAST));
         isNetworkAvailable = ConnectivityReceiver.isConnected(this);
         database = LocationDatabase.getInstance(this);
@@ -86,7 +90,7 @@ public class LocationService extends Service {
 
         private Location location;
 
-        public MyRunnable(Location location) {
+        private MyRunnable(Location location) {
             this.location = location;
         }
 
@@ -109,6 +113,7 @@ public class LocationService extends Service {
                     e.printStackTrace();
                 }
             } else {
+                entity.setAddress("NA");
                 database.locationDao().insertLocation(entity);
             }
 
@@ -121,8 +126,46 @@ public class LocationService extends Service {
         return null;
     }
 
+    private class InsertDataRunnable implements Runnable {
+
+        @Override
+        public void run() {
+
+            Date currentTime = Calendar.getInstance().getTime();
+            LocationHistory history = new LocationHistory();
+            history.setTimeStamp(currentTime.toString());
+
+            List<LocationEntity> locationEntities = LocationDatabase.getInstance(getApplication()).locationDao().getAllEntities();
+
+            StringBuilder addressStringBuilder = new StringBuilder();
+            StringBuilder latBuilder = new StringBuilder();
+            StringBuilder lngBuilder = new StringBuilder();
+
+            if (locationEntities != null) {
+                for (int i = 0; i < locationEntities.size(); i++) {
+                    addressStringBuilder.append(locationEntities.get(i).getAddress()).append(Utils.LAT_LNG_DELIMITER);
+                }
+                for (int i = 0; i < locationEntities.size(); i++) {
+                    latBuilder.append(locationEntities.get(i).getLat()).append(Utils.LAT_DELIMITER);
+                }
+                for (int i = 0; i < locationEntities.size(); i++) {
+                    lngBuilder.append(locationEntities.get(i).getLng()).append(Utils.LNG_DELIMITER);
+                }
+                latBuilder.append(Utils.LAT_LNG_DELIMITER).append(lngBuilder);
+            }
+
+            String addressStr = addressStringBuilder.toString();
+            history.setLocationsString(latBuilder.toString());
+            history.setHistoryAddress(addressStr);
+
+            LocationDatabase.getInstance(getApplication()).historyDao().insertLocationHistory(history);
+            LocationDatabase.getInstance(getApplication()).locationDao().deleteAll();
+        }
+    }
+
     @Override
     public void onDestroy() {
+        AsyncTask.execute(new InsertDataRunnable());
         unregisterReceiver(connectionReceiver);
         fusedLocationProvider.removeLocationUpdates(locationCallback);
         super.onDestroy();

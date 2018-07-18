@@ -16,13 +16,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
 
     private final LayoutInflater inflater;
     private List<LocationEntity> locationList;
-    private LocationClickListener listener;
     private Context context;
 
     public LocationAdapter(Context context) {
         inflater = LayoutInflater.from(context);
         this.context = context;
-//        this.listener = (LocationClickListener) context;
     }
 
     @Override
@@ -38,24 +36,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
 
         String lat = String.valueOf(currentLocation.getLat());
         String lng = String.valueOf(currentLocation.getLng());
-        if (lat.length() > 6) {
-            lat = lat.substring(0, 6);
+        if (lat.length() > 9) {
+            lat = lat.substring(0, 9);
         }
-        if (lng.length() > 6) {
-            lng = lng.substring(0, 6);
+        if (lng.length() > 9) {
+            lng = lng.substring(0, 9);
         }
-        holder.coordinatesTextView.setText("Lat: " + lat + "    " + "Lng: " + lng + "  id:" + currentLocation.getId());
+        holder.coordinatesTextView.setText("Lat: " + lat + "    " + "Lng: " + lng);
         if (currentLocation.getAddress() == null) {
             holder.addressTextView.setVisibility(View.GONE);
         } else {
             holder.addressTextView.setText(currentLocation.getAddress());
         }
-    }
-
-    public interface LocationClickListener {
-        void onPersonLongClick(LocationEntity locationEntity);
-
-        void onPersonClick(LocationEntity locationEntity);
     }
 
     public void setLocation(List<LocationEntity> locationList) {
