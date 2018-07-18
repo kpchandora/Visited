@@ -2,14 +2,19 @@ package developer.code.kpchandora.locationassignment;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +35,13 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.List;
 
@@ -40,7 +53,10 @@ import developer.code.kpchandora.locationassignment.viewmodel.LocationViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private static final int PERMISSION_REQUEST_CODE = 101;
+    private static final int REQUEST_CHECK_SETTINGS = 12;
     public final static String CONNECTIVITY_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
     private FirebaseJobDispatcher jobDispatcher;
 
@@ -86,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.history){
-
+        if (item.getItemId() == R.id.history) {
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -148,8 +164,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (startButton.getText().toString().equalsIgnoreCase("Start")) {
-                    startButton.setText("Stop");
-                    startService(new Intent(MainActivity.this, LocationService.class));
+                    if (checkLocationSettings()) {
+                        startButton.setText("Stop");
+                        startService(new Intent(MainActivity.this, LocationService.class));
+                    }
                 } else {
                     startButton.setText("Start");
                     stopService(new Intent(MainActivity.this, LocationService.class));
@@ -157,5 +175,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkLocationSettings() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager != null && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showLocationDialog();
+            return false;
+        }
+        return true;
+    }
+
+    private void showLocationDialog() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setMessage("Location is not enabled");
+        dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(myIntent);
+            }
+        });
+        dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                paramDialogInterface.dismiss();
+            }
+        });
+        dialog.setCancelable(false);
+
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
     }
 }
