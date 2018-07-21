@@ -42,6 +42,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -105,7 +106,17 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.history) {
             startActivity(new Intent(MainActivity.this, HistoryActivity.class));
         }
+        if (item.getItemId() == R.id.sign_out){
+            signOutUser();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void signOutUser() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

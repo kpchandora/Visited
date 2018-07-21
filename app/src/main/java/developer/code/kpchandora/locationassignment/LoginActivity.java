@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.io.InvalidClassException;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    public static final String[] USER_KEY = new String [1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "onAuthStateChanged: ");
 
                 if (mUser != null) {
-                    Log.i(TAG, "onAuthStateChanged: " + mUser.getEmail());
+                    Log.i(TAG, "onAuthStateChanged: " + mUser.getEmail() + " UID: " + mUser.getUid());
+                    USER_KEY[0] = mUser.getUid();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     finish();
@@ -91,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
 
     @Override
     protected void onStop() {

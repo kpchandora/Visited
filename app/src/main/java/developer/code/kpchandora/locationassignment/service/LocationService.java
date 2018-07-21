@@ -65,6 +65,7 @@ public class LocationService extends Service {
         }
     }
 
+
     private void getLocationCallback() {
         locationCallback = new LocationCallback() {
             @Override
@@ -137,18 +138,24 @@ public class LocationService extends Service {
 
             List<LocationEntity> locationEntities = LocationDatabase.getInstance(getApplication()).locationDao().getAllEntities();
 
+            int locationEntitiesSize = locationEntities.size();
+
+            if (locationEntitiesSize < 1){
+                return;
+            }
+
             StringBuilder addressStringBuilder = new StringBuilder();
             StringBuilder latBuilder = new StringBuilder();
             StringBuilder lngBuilder = new StringBuilder();
 
             if (locationEntities != null) {
-                for (int i = 0; i < locationEntities.size(); i++) {
+                for (int i = 0; i < locationEntitiesSize; i++) {
                     addressStringBuilder.append(locationEntities.get(i).getAddress()).append(Utils.LAT_LNG_DELIMITER);
                 }
-                for (int i = 0; i < locationEntities.size(); i++) {
+                for (int i = 0; i < locationEntitiesSize; i++) {
                     latBuilder.append(locationEntities.get(i).getLat()).append(Utils.LAT_DELIMITER);
                 }
-                for (int i = 0; i < locationEntities.size(); i++) {
+                for (int i = 0; i < locationEntitiesSize; i++) {
                     lngBuilder.append(locationEntities.get(i).getLng()).append(Utils.LNG_DELIMITER);
                 }
                 latBuilder.append(Utils.LAT_LNG_DELIMITER).append(lngBuilder);

@@ -8,4 +8,7 @@
         android:title="History"
         app:showAsAction="always" />
 
+    <item android:id="@+id/sign_out"
+        android:title="Sign out"
+        app:showAsAction="never"/>
 </menu>

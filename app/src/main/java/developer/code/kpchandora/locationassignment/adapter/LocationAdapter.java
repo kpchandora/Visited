@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -33,6 +34,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
     public void onBindViewHolder(MyHolder holder, int position) {
 
         final LocationEntity currentLocation = locationList.get(position);
+
+        if (currentLocation.getAddress().equalsIgnoreCase("NA")){
+            holder.locationRelativeLayout.setBackgroundResource(R.drawable.unknown_address_icon);
+        }else {
+            holder.locationRelativeLayout.setBackgroundResource(R.drawable.location_icon);
+        }
 
         String lat = String.valueOf(currentLocation.getLat());
         String lng = String.valueOf(currentLocation.getLng());
@@ -66,11 +73,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
 
         private TextView addressTextView;
         private TextView coordinatesTextView;
+        private RelativeLayout locationRelativeLayout;
 
         public MyHolder(View itemView) {
             super(itemView);
             addressTextView = itemView.findViewById(R.id.address_textView);
             coordinatesTextView = itemView.findViewById(R.id.coordinates_textView);
+            locationRelativeLayout = itemView.findViewById(R.id.location_relative_layout);
         }
     }
 }

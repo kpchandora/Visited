@@ -4,9 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.List;
-
-import developer.code.kpchandora.locationassignment.LocationListModel;
+import developer.code.kpchandora.locationassignment.LoginActivity;
+import developer.code.kpchandora.locationassignment.MainActivity;
 
 @Entity(tableName = LocationHistory.LOCATION_HISTORY_TABLE_NAME)
 public class LocationHistory {
