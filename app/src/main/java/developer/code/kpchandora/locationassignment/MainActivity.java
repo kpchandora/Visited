@@ -52,7 +52,7 @@ import developer.code.kpchandora.locationassignment.service.LocationService;
 import developer.code.kpchandora.locationassignment.service.MyJobService;
 import developer.code.kpchandora.locationassignment.viewmodel.LocationViewModel;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RootAnimActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(MainActivity.this, LoginActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        stopService(new Intent(MainActivity.this, LocationService.class));
         finish();
     }
 

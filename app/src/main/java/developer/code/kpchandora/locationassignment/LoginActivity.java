@@ -25,7 +25,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.InvalidClassException;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends RootAnimActivity {
 
     private static final String TAG = "LoginActivity";
 
@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    public static final String[] USER_KEY = new String [1];
+    public static final String[] USER_KEY = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

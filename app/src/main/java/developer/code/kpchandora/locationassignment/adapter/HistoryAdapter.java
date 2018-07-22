@@ -2,7 +2,11 @@ package developer.code.kpchandora.locationassignment.adapter;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +16,7 @@ import java.util.List;
 
 import developer.code.kpchandora.locationassignment.R;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
+import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder> {
 
@@ -33,7 +38,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
         final LocationHistory history = locationHistories.get(position);
-        holder.historyTextView.setText(history.getTimeStamp());
+        String[] timeStamp = history.getTimeStamp().split("GMT");
+        holder.historyTextView.setText(timeStamp[0]);
+
+        String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
+        holder.sourceTextView.setText("Source: " + addresses[0]);
+        holder.destinationTextView.setText("Destination: " + addresses[addresses.length - 1]);
+
+//        String sourceText = "Source: ";
+//
+//        Spannable spannable = new SpannableString(sourceText);
+//        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), sourceText.length(), );
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,10 +76,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
 
     public class MyHolder extends RecyclerView.ViewHolder {
         private TextView historyTextView;
+        private TextView sourceTextView;
+        private TextView destinationTextView;
 
         public MyHolder(View itemView) {
             super(itemView);
             historyTextView = itemView.findViewById(R.id.time_text_view);
+            sourceTextView = itemView.findViewById(R.id.source_textview);
+            destinationTextView = itemView.findViewById(R.id.destination_textview);
         }
     }
 }

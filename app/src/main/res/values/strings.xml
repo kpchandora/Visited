@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Visited</string>
+    <string name="destination_text">Destination</string>
+    <string name="source_text">Source</string>
+    <string name="time_stamp_text">Time Stamp</string>
 </resources>
