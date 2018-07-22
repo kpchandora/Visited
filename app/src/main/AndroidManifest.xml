@@ -14,10 +14,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/MainActivityStyle">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LocationActivityStyle" />
 
         <service android:name=".service.LocationService" />
         <service
@@ -37,8 +38,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HistoryActivity" />
-        <activity android:name=".Locations"></activity>
+        <activity
+            android:name=".HistoryActivity"
+            android:theme="@style/HistoryActivityStyle" />
+        <activity
+            android:name=".Locations"
+            android:theme="@style/LocationActivityStyle"></activity>
     </application>
 
 </manifest>

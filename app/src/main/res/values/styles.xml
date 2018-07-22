@@ -1,11 +1,25 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MainActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="LocationActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorLocationPrimary</item>
+        <item name="colorPrimaryDark">@color/colorLocationPrimaryDark</item>
+        <item name="colorAccent">@color/colorLocationAccent</item>
+    </style>
+
+    <style name="HistoryActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorHistoryPrimary</item>
+        <item name="colorPrimaryDark">@color/colorHistoryPrimaryDark</item>
+        <item name="colorAccent">@color/colorHistoryAccent</item>
     </style>
 
 </resources>
