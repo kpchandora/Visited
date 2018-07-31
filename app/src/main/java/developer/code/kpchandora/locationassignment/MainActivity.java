@@ -89,6 +89,8 @@ public class MainActivity extends RootAnimActivity {
             @Override
             public void onChanged(@Nullable List<LocationEntity> locationEntities) {
                 adapter.setLocation(locationEntities);
+//                adapter.notifyItemInserted(0);
+//                locationRecyclerView.scrollToPosition(0);
             }
         });
 

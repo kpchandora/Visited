@@ -12,7 +12,8 @@ import java.util.List;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 
 @Dao
-public interface LocationDao {
+public interface
+LocationDao {
 
     /**
      * Inserts a new Location into the table

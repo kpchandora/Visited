@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
 import java.util.List;
@@ -38,18 +39,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
         final LocationHistory history = locationHistories.get(position);
+
+
+        AlphaAnimation aa = new AlphaAnimation(0.1f, 1.0f);
+        aa.setDuration(500);
+        holder.itemView.startAnimation(aa);
+
         String[] timeStamp = history.getTimeStamp().split("GMT");
         holder.historyTextView.setText(timeStamp[0]);
 
         String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
-        holder.sourceTextView.setText("Source: " + addresses[0]);
+
+        holder.sourceTextView.setText("Source: "+addresses[0]);
         holder.destinationTextView.setText("Destination: " + addresses[addresses.length - 1]);
-
-//        String sourceText = "Source: ";
-//
-//        Spannable spannable = new SpannableString(sourceText);
-//        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), sourceText.length(), );
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

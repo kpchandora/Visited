@@ -56,8 +56,8 @@ public class LocationService extends Service {
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(getApplicationContext());
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10000);
-        locationRequest.setSmallestDisplacement(20f);
+        locationRequest.setInterval(5000);
+//        locationRequest.setSmallestDisplacement(20f);
 
         getLocationCallback();
         if (MainActivity.checkPermission()) {

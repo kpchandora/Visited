@@ -40,10 +40,17 @@
         </activity>
         <activity
             android:name=".HistoryActivity"
+            android:label="@string/history_activity"
             android:theme="@style/HistoryActivityStyle" />
         <activity
             android:name=".Locations"
-            android:theme="@style/LocationActivityStyle"></activity>
+            android:theme="@style/LocationActivityStyle" />
+        <activity android:name=".DetailsActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key"/>
+
     </application>
 
 </manifest>

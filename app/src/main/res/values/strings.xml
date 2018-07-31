@@ -3,4 +3,6 @@
     <string name="destination_text">Destination</string>
     <string name="source_text">Source</string>
     <string name="time_stamp_text">Time Stamp</string>
+    <string name="history_activity">History</string>
+    <string name="api_key">AIzaSyAI2mNGgQOuo93zT8d-bBqKBfrIZJVVHLg</string>
 </resources>
