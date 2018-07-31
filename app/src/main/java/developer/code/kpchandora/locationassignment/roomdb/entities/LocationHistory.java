@@ -3,9 +3,13 @@ package developer.code.kpchandora.locationassignment.roomdb.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+
+import java.util.List;
 
 import developer.code.kpchandora.locationassignment.LoginActivity;
 import developer.code.kpchandora.locationassignment.MainActivity;
+import developer.code.kpchandora.locationassignment.roomdb.coverters.LocationHistoryConverter;
 
 @Entity(tableName = LocationHistory.LOCATION_HISTORY_TABLE_NAME)
 public class LocationHistory {
@@ -25,6 +29,8 @@ public class LocationHistory {
     /*The name of address column*/
     public static final String HISTORY_ADDRESS_COLUMN = "history_address";
 
+    public static final String LOCATIONS_LIST = "locations_list";
+
     /*The unique ID of the table*/
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = HISTORY_TABLE_ID)
@@ -39,6 +45,19 @@ public class LocationHistory {
 
     @ColumnInfo(name = HISTORY_ADDRESS_COLUMN)
     private String historyAddress;
+
+    /*The list of locations entity*/
+//    @TypeConverters(LocationHistoryConverter.class)
+//    @ColumnInfo(name = LOCATIONS_LIST)
+//    private List<LocationEntity>locationEntityList;
+
+//    public List<LocationEntity> getLocationEntityList() {
+//        return locationEntityList;
+//    }
+//
+//    public void setLocationEntityList(List<LocationEntity> locationEntityList) {
+//        this.locationEntityList = locationEntityList;
+//    }
 
     public String getHistoryAddress() {
         return historyAddress;

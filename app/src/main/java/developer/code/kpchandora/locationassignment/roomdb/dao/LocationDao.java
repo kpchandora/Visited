@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 import java.util.List;
 
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
+import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
 
 @Dao
 public interface
@@ -47,4 +48,5 @@ LocationDao {
 
     @Query("DELETE FROM " + LocationEntity.LOCATION_TABLE_NAME)
     void deleteAll();
+
 }

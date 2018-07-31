@@ -14,6 +14,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +30,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -64,6 +66,8 @@ public class MainActivity extends RootAnimActivity {
     private LocationViewModel viewModel;
     private RecyclerView locationRecyclerView;
     private Button startButton;
+    private ImageView emptyView;
+    private TextView fetchingTextView;
 
 
     @Override
@@ -71,6 +75,8 @@ public class MainActivity extends RootAnimActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         locationRecyclerView = findViewById(R.id.recyclerView);
+        emptyView = findViewById(R.id.emptyImageView);
+        fetchingTextView = findViewById(R.id.emptyTextView);
         locationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         viewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
 
@@ -88,6 +94,12 @@ public class MainActivity extends RootAnimActivity {
         viewModel.getListLiveData().observe(this, new Observer<List<LocationEntity>>() {
             @Override
             public void onChanged(@Nullable List<LocationEntity> locationEntities) {
+                if (locationEntities != null && locationEntities.size() > 0) {
+                    emptyView.setVisibility(View.GONE);
+                    fetchingTextView.setVisibility(View.GONE);
+                } else {
+                    emptyView.setVisibility(View.VISIBLE);
+                }
                 adapter.setLocation(locationEntities);
 //                adapter.notifyItemInserted(0);
 //                locationRecyclerView.scrollToPosition(0);
@@ -108,7 +120,7 @@ public class MainActivity extends RootAnimActivity {
         if (item.getItemId() == R.id.history) {
             startActivity(new Intent(MainActivity.this, HistoryActivity.class));
         }
-        if (item.getItemId() == R.id.sign_out){
+        if (item.getItemId() == R.id.sign_out) {
             signOutUser();
         }
         return super.onOptionsItemSelected(item);
@@ -180,12 +192,20 @@ public class MainActivity extends RootAnimActivity {
                 if (startButton.getText().toString().equalsIgnoreCase("Start")) {
                     if (checkLocationSettings()) {
                         startButton.setText("Stop");
-                        startService(new Intent(MainActivity.this, LocationService.class));
+                        fetchingTextView.setVisibility(View.VISIBLE);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                               MainActivity.this.startService(new Intent(MainActivity.this, LocationService.class));
+                            }
+                        }, 2000);
+
                     }
                 } else {
                     startButton.setText("Start");
                     stopService(new Intent(MainActivity.this, LocationService.class));
                     startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+                    fetchingTextView.setVisibility(View.GONE);
                 }
             }
         });
