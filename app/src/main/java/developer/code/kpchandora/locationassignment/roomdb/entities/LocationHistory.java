@@ -47,17 +47,17 @@ public class LocationHistory {
     private String historyAddress;
 
     /*The list of locations entity*/
-//    @TypeConverters(LocationHistoryConverter.class)
-//    @ColumnInfo(name = LOCATIONS_LIST)
-//    private List<LocationEntity>locationEntityList;
+    @TypeConverters(LocationHistoryConverter.class)
+    @ColumnInfo(name = LOCATIONS_LIST)
+    private List<LocationEntity>locationEntityList;
 
-//    public List<LocationEntity> getLocationEntityList() {
-//        return locationEntityList;
-//    }
-//
-//    public void setLocationEntityList(List<LocationEntity> locationEntityList) {
-//        this.locationEntityList = locationEntityList;
-//    }
+    public List<LocationEntity> getLocationEntityList() {
+        return locationEntityList;
+    }
+
+    public void setLocationEntityList(List<LocationEntity> locationEntityList) {
+        this.locationEntityList = locationEntityList;
+    }
 
     public String getHistoryAddress() {
         return historyAddress;

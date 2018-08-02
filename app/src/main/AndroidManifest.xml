@@ -20,7 +20,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/LocationActivityStyle" />
 
-        <service android:name=".service.LocationService" />
+        <service android:name=".service.LocationService"
+            android:stopWithTask="false"/>
         <service
             android:name=".service.MyJobService"
             android:exported="true">

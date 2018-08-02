@@ -140,7 +140,7 @@ public class LocationService extends Service {
 
             int locationEntitiesSize = locationEntities.size();
 
-            if (locationEntitiesSize < 1){
+            if (locationEntitiesSize < 1) {
                 return;
             }
 
@@ -171,10 +171,22 @@ public class LocationService extends Service {
     }
 
     @Override
-    public void onDestroy() {
+    public void onTaskRemoved(Intent rootIntent) {
+        Log.i(TAG, "onTaskRemoved: ");
+        removeData();
+    }
+
+    private void removeData(){
+        Log.i(TAG, "removeData: ");
         AsyncTask.execute(new InsertDataRunnable());
         unregisterReceiver(connectionReceiver);
         fusedLocationProvider.removeLocationUpdates(locationCallback);
+    }
+    
+    @Override
+    public void onDestroy() {
+        Log.i(TAG, "onDestroy: ");
+        removeData();
         super.onDestroy();
     }
 }

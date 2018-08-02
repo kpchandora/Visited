@@ -1,6 +1,7 @@
 package developer.code.kpchandora.locationassignment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
@@ -16,6 +17,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -32,17 +34,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -69,6 +76,7 @@ public class MainActivity extends RootAnimActivity {
     private ImageView emptyView;
     private TextView fetchingTextView;
 
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +109,6 @@ public class MainActivity extends RootAnimActivity {
                     emptyView.setVisibility(View.VISIBLE);
                 }
                 adapter.setLocation(locationEntities);
-//                adapter.notifyItemInserted(0);
-//                locationRecyclerView.scrollToPosition(0);
             }
         });
 
@@ -189,57 +195,117 @@ public class MainActivity extends RootAnimActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (startButton.getText().toString().equalsIgnoreCase("Start")) {
-                    if (checkLocationSettings()) {
-                        startButton.setText("Stop");
-                        fetchingTextView.setVisibility(View.VISIBLE);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                               MainActivity.this.startService(new Intent(MainActivity.this, LocationService.class));
-                            }
-                        }, 2000);
-
-                    }
+                LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                if (manager != null && manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    startFetchingLocation();
                 } else {
-                    startButton.setText("Start");
-                    stopService(new Intent(MainActivity.this, LocationService.class));
-                    startActivity(new Intent(MainActivity.this, HistoryActivity.class));
-                    fetchingTextView.setVisibility(View.GONE);
+                    showLocationDialog();
                 }
             }
         });
     }
 
-    private boolean checkLocationSettings() {
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager != null && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showLocationDialog();
-            return false;
+    private void startFetchingLocation() {
+        if (startButton.getText().toString().equalsIgnoreCase("Start")) {
+            startButton.setText("Stop");
+            fetchingTextView.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.startService(new Intent(MainActivity.this, LocationService.class));
+                }
+            }, 2000);
+
+        } else {
+            startButton.setText("Start");
+            stopService(new Intent(MainActivity.this, LocationService.class));
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            fetchingTextView.setVisibility(View.GONE);
         }
-        return true;
+    }
+
+
+    public void settingsrequest() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(30 * 1000);
+        locationRequest.setFastestInterval(5 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true); //this is the key ingredient
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        startFetchingLocation();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
     }
 
     private void showLocationDialog() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("Location is not enabled");
-        dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(myIntent);
-            }
-        });
-        dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(MainActivity.this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                        @Override
+                        public void onConnected(@Nullable Bundle bundle) {
 
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                paramDialogInterface.dismiss();
-            }
-        });
-        dialog.setCancelable(false);
+                        }
 
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
+                        @Override
+                        public void onConnectionSuspended(int i) {
+                            mGoogleApiClient.connect();
+                        }
+                    })
+                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                        }
+                    }).build();
+            mGoogleApiClient.connect();
+        }
+
+        settingsrequest();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        startFetchingLocation();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(MainActivity.this, "Please turn on GPS", Toast.LENGTH_SHORT).show();//keep asking if imp or do whatever
+                        break;
+                }
+                break;
+        }
     }
 }

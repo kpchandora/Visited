@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
 import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
@@ -50,7 +51,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
 
         String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
 
-        holder.sourceTextView.setText("Source: "+addresses[0]);
+        holder.sourceTextView.setText("Source: " + addresses[0]);
         holder.destinationTextView.setText("Destination: " + addresses[addresses.length - 1]);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
