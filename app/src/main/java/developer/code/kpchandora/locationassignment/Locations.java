@@ -54,7 +54,6 @@ public class Locations extends RootAnimActivity {
 
         adapter.setLocation(entityList);
 
-
     }
 
     @Override

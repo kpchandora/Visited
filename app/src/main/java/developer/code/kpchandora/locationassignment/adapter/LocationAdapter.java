@@ -1,6 +1,11 @@
 package developer.code.kpchandora.locationassignment.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import developer.code.kpchandora.locationassignment.DetailsActivity;
 import developer.code.kpchandora.locationassignment.R;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 
@@ -18,6 +24,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
     private final LayoutInflater inflater;
     private List<LocationEntity> locationList;
     private Context context;
+    private int tag;
 
     public LocationAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -31,13 +38,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
     }
 
     @Override
-    public void onBindViewHolder(MyHolder holder, int position) {
+    public void onBindViewHolder(final MyHolder holder, int position) {
 
         final LocationEntity currentLocation = locationList.get(position);
+        tag = 0;
 
-        if (currentLocation.getAddress().equalsIgnoreCase("NA")){
+        if (currentLocation.getAddress().equalsIgnoreCase("NA")) {
+            tag = DetailsActivity.UNKNOWN_ADDRESS_ICON;
             holder.locationRelativeLayout.setBackgroundResource(R.drawable.unknown_address_icon);
-        }else {
+        } else {
+            tag = DetailsActivity.KNOWN_ADDRESS_ICON;
             holder.locationRelativeLayout.setBackgroundResource(R.drawable.location_icon);
         }
 
@@ -55,6 +65,19 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyHold
         } else {
             holder.addressTextView.setText(currentLocation.getAddress());
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra(DetailsActivity.ICON_TAG, tag);
+                context.startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation((Activity) context,
+                                holder.locationRelativeLayout, "shareView").toBundle());
+            }
+        });
+
     }
 
     public void setLocation(List<LocationEntity> locationList) {
