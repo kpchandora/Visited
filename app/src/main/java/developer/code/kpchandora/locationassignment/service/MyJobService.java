@@ -1,6 +1,7 @@
 package developer.code.kpchandora.locationassignment.service;
 
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
@@ -40,4 +41,6 @@ public class MyJobService extends JobService {
         Log.i(TAG, "onDestroy: ");
         super.onDestroy();
     }
+
+
 }

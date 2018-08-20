@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
@@ -15,6 +18,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -56,6 +61,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 import developer.code.kpchandora.locationassignment.adapter.LocationAdapter;
+import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 import developer.code.kpchandora.locationassignment.service.LocationService;
 import developer.code.kpchandora.locationassignment.service.MyJobService;
@@ -112,6 +118,24 @@ public class MainActivity extends RootAnimActivity {
             }
         });
 
+        createNotificationChannel();
+
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Location";
+            String description = "Fetches location";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("noti_id", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager == null) {
+                return;
+            }
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
@@ -190,6 +214,12 @@ public class MainActivity extends RootAnimActivity {
 
         if (isMyServiceRunning(LocationService.class)) {
             startButton.setText("Stop");
+        } else {
+            List<LocationEntity> locationEntities = LocationDatabase.getInstance(getApplication()).locationDao().getAllEntities();
+            if (locationEntities.size() > 0) {
+                Log.i(TAG, "startButtonClick: ");
+                AsyncTask.execute(new LocationService().new InsertDataRunnable());
+            }
         }
 
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +229,7 @@ public class MainActivity extends RootAnimActivity {
                 if (manager != null && manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     startFetchingLocation();
                 } else {
+                    startButton.setEnabled(false);
                     showLocationDialog();
                 }
             }
@@ -299,9 +330,11 @@ public class MainActivity extends RootAnimActivity {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
+                        startButton.setEnabled(true);
                         startFetchingLocation();
                         break;
                     case Activity.RESULT_CANCELED:
+                        startButton.setEnabled(true);
                         Toast.makeText(MainActivity.this, "Please turn on GPS", Toast.LENGTH_SHORT).show();//keep asking if imp or do whatever
                         break;
                 }

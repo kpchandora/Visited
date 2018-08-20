@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -51,8 +54,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
 
         String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
 
-        holder.sourceTextView.setText("Source: " + addresses[0]);
-        holder.destinationTextView.setText("Destination: " + addresses[addresses.length - 1]);
+        String source = "<font><b>Source:</b></font> " + addresses[0];
+        String destination = "<font><b>Destination:</b></font> " + addresses[addresses.length - 1];
+
+        holder.sourceTextView.setText(Html.fromHtml(source), TextView.BufferType.SPANNABLE);
+        holder.destinationTextView.setText(Html.fromHtml(destination), TextView.BufferType.SPANNABLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

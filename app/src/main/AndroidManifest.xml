@@ -20,8 +20,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/LocationActivityStyle" />
 
-        <service android:name=".service.LocationService"
-            android:stopWithTask="false"/>
+        <service android:name=".service.LocationService" />
+
+        <receiver android:name=".receiver.NotificationBroadcastReceiver"/>
+
         <service
             android:name=".service.MyJobService"
             android:exported="true">
@@ -39,14 +41,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".HistoryActivity"
             android:label="@string/history_activity"
             android:theme="@style/HistoryActivityStyle" />
+
         <activity
             android:name=".Locations"
             android:theme="@style/LocationActivityStyle" />
-        <activity android:name=".DetailsActivity"></activity>
+        <activity android:name=".DetailsActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

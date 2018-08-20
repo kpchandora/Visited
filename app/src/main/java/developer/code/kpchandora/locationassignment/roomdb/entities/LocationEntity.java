@@ -24,6 +24,9 @@ public class LocationEntity {
     /*The name of address column*/
     public static final String LOCATION_ADDRESS_COLUMN = "address_column";
 
+    /*The name of time stamp column*/
+    public static final String LOCATION_TIME_STAMP_COLUMN = "location_time_stamp";
+
     /*The unique ID of the location table*/
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = LOCATION_TABLE_ID)
@@ -40,6 +43,17 @@ public class LocationEntity {
     /*The address of fetched coordinates*/
     @ColumnInfo(name = LOCATION_ADDRESS_COLUMN)
     private String address;
+
+    @ColumnInfo(name = LOCATION_TIME_STAMP_COLUMN)
+    private String timeStamp;
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public int getId() {
         return id;
