@@ -38,4 +38,8 @@ public interface LocationHistoryDao {
     @Query("SELECT * FROM " + LocationHistory.LOCATION_HISTORY_TABLE_NAME +
             " ORDER BY " + LocationHistory.HISTORY_TABLE_ID + " DESC")
     LiveData<List<LocationHistory>> getAllHistory();
+
+    @Query("SELECT * FROM " + LocationHistory.LOCATION_HISTORY_TABLE_NAME +
+            " ORDER BY " + LocationHistory.HISTORY_TABLE_ID + " DESC")
+    List<LocationHistory> getAllHistoryData();
 }

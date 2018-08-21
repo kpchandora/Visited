@@ -57,12 +57,20 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import developer.code.kpchandora.locationassignment.adapter.LocationAdapter;
 import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
+import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
 import developer.code.kpchandora.locationassignment.service.LocationService;
 import developer.code.kpchandora.locationassignment.service.MyJobService;
 import developer.code.kpchandora.locationassignment.viewmodel.LocationViewModel;
@@ -119,6 +127,7 @@ public class MainActivity extends RootAnimActivity {
         });
 
         createNotificationChannel();
+        restoreData();
 
     }
 
@@ -341,4 +350,50 @@ public class MainActivity extends RootAnimActivity {
                 break;
         }
     }
+
+    private void restoreData() {
+
+        final int[] size = new int[1];
+        size[0] = 0;
+
+        List<LocationHistory> list = LocationDatabase.getInstance(getApplication()).historyDao().getAllHistoryData();
+        if (list != null && list.size() > 0) {
+            size[0] = list.size();
+        }
+        Log.i(TAG, "restoreData: " + size[0]);
+        DatabaseReference reference =
+                FirebaseDatabase.getInstance().getReference("visited").child(FirebaseAuth.getInstance().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null && size[0] == 0) {
+                    Log.i(TAG, "onDataChange: " + size[0]);
+                    new RestoreDataAsyncTask().execute(dataSnapshot);
+                    size[0] = 1;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled: " + databaseError.getDetails());
+            }
+        });
+    }
+
+    private class RestoreDataAsyncTask extends AsyncTask<DataSnapshot, Void, Void> {
+
+        @Override
+        protected Void doInBackground(DataSnapshot... dataSnapshots) {
+            Iterable<DataSnapshot> dataSnapshot = dataSnapshots[0].getChildren();
+            for (DataSnapshot snapshot : dataSnapshot) {
+                Log.i(TAG, "doInBackground: " + snapshot.getKey());
+                LocationHistory history = new LocationHistory();
+                history.setTimeStamp(snapshot.getKey());
+                history.setLocationEntityList((List<LocationEntity>) snapshot.getValue());
+                LocationDatabase.getInstance(getApplication()).historyDao().insertLocationHistory(history);
+            }
+            return null;
+        }
+    }
+
 }

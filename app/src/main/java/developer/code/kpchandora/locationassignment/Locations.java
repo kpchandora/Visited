@@ -37,22 +37,7 @@ public class Locations extends RootAnimActivity {
         locationsRecyclerView.setAdapter(adapter);
         LocationHistory history = LocationDatabase.getInstance(getApplication()).historyDao().getSingleHistory(timeStamp);
 
-        String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
-
-        String[] latLngString = history.getLocationsString().split(Utils.LAT_LNG_DELIMITER);
-        String[] latArray = latLngString[0].split(Utils.LAT_DELIMITER);
-        String[] lngArray = latLngString[1].split(Utils.LNG_DELIMITER);
-
-        List<LocationEntity> entityList = new ArrayList<>();
-        for (int i = 0; i < addresses.length; i++) {
-            LocationEntity entity = new LocationEntity();
-            entity.setAddress(addresses[i]);
-            entity.setLat(Double.parseDouble(latArray[i]));
-            entity.setLng(Double.parseDouble(lngArray[i]));
-            entityList.add(entity);
-        }
-
-        adapter.setLocation(entityList);
+        adapter.setLocation(history.getLocationEntityList());
 
     }
 

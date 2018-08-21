@@ -27,6 +27,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -132,8 +135,16 @@ public class LocationService extends Service {
         @Override
         public void run() {
             LocationEntity entity = new LocationEntity();
+
+            Date date = Calendar.getInstance().getTime();
+            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss aa");
+            String formattedDate = dateFormat.format(date);
+
+
             entity.setLat(location.getLatitude());
             entity.setLng(location.getLongitude());
+            entity.setTimeStamp(formattedDate);
+
             Log.i(TAG, "run: " + isNetworkAvailable);
             if (isNetworkAvailable) {
                 Geocoder geocoder = new Geocoder(LocationService.this, Locale.getDefault());
@@ -184,40 +195,34 @@ public class LocationService extends Service {
             List<LocationEntity> locationEntities =
                     LocationDatabase.getInstance(getApplication()).locationDao().getAllEntities();
 
+            if (locationEntities == null) {
+                return;
+            }
+
             int locationEntitiesSize = locationEntities.size();
 
             if (locationEntitiesSize < 1) {
                 return;
             }
 
-            Date currentTime = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm aa");
-            String formattedDate = dateFormat.format(currentTime);
-            LocationHistory history = new LocationHistory();
-            history.setTimeStamp(formattedDate);
-
-
-
-            StringBuilder addressStringBuilder = new StringBuilder();
-            StringBuilder latBuilder = new StringBuilder();
-            StringBuilder lngBuilder = new StringBuilder();
-
-            if (locationEntities != null) {
-                for (int i = 0; i < locationEntitiesSize; i++) {
-                    addressStringBuilder.append(locationEntities.get(i).getAddress()).append(Utils.LAT_LNG_DELIMITER);
-                }
-                for (int i = 0; i < locationEntitiesSize; i++) {
-                    latBuilder.append(locationEntities.get(i).getLat()).append(Utils.LAT_DELIMITER);
-                }
-                for (int i = 0; i < locationEntitiesSize; i++) {
-                    lngBuilder.append(locationEntities.get(i).getLng()).append(Utils.LNG_DELIMITER);
-                }
-                latBuilder.append(Utils.LAT_LNG_DELIMITER).append(lngBuilder);
+            String date = locationEntities.get(locationEntitiesSize - 1).getTimeStamp();
+            Date dateFormat;
+            String convertedDate = "";
+            try {
+                dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss aa").parse(date);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd hh:mm aa");
+                convertedDate = simpleDateFormat.format(dateFormat);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
-            String addressStr = addressStringBuilder.toString();
-            history.setLocationsString(latBuilder.toString());
-            history.setHistoryAddress(addressStr);
+            LocationHistory history = new LocationHistory();
+            history.setTimeStamp(convertedDate);
+            history.setLocationEntityList(locationEntities);
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("visited");
+            reference.child(FirebaseAuth.getInstance().getUid()).
+                    child(convertedDate).setValue(locationEntities);
 
             LocationDatabase.getInstance(getApplication()).historyDao().insertLocationHistory(history);
             LocationDatabase.getInstance(getApplication()).locationDao().deleteAll();

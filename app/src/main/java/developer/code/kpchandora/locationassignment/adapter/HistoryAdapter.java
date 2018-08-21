@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHist
 import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder> {
+
+    private static final String TAG = "HistoryAdapter";
 
     private List<LocationHistory> locationHistories;
     private Context context;
@@ -49,13 +52,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyHolder
         aa.setDuration(500);
         holder.itemView.startAnimation(aa);
 
-        String[] timeStamp = history.getTimeStamp().split("GMT");
-        holder.historyTextView.setText(timeStamp[0]);
+        String timeStamp = history.getTimeStamp();
+        holder.historyTextView.setText(timeStamp);
 
-        String[] addresses = history.getHistoryAddress().split(Utils.LAT_LNG_DELIMITER);
+        String sourceAddress = history.getLocationEntityList().get(0).getAddress();
+        String destinationAddress
+                = history.getLocationEntityList().get(history.getLocationEntityList().size() - 1).getAddress();
 
-        String source = "<font><b>Source:</b></font> " + addresses[0];
-        String destination = "<font><b>Destination:</b></font> " + addresses[addresses.length - 1];
+        String source = "<font><b>Source:</b></font> " + sourceAddress;
+        String destination = "<font><b>Destination:</b></font> " + destinationAddress;
 
         holder.sourceTextView.setText(Html.fromHtml(source), TextView.BufferType.SPANNABLE);
         holder.destinationTextView.setText(Html.fromHtml(destination), TextView.BufferType.SPANNABLE);
