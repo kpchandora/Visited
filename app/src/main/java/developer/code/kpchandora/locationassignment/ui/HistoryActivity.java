@@ -1,12 +1,9 @@
-package developer.code.kpchandora.locationassignment;
+package developer.code.kpchandora.locationassignment.ui;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +11,8 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.RootAnimActivity;
 import developer.code.kpchandora.locationassignment.adapter.HistoryAdapter;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
 import developer.code.kpchandora.locationassignment.viewmodel.HistoryViewModel;
@@ -55,7 +54,7 @@ public class HistoryActivity extends RootAnimActivity implements HistoryAdapter.
 
     @Override
     public void onHistoryClick(String timeStamp) {
-        Intent intent = new Intent(HistoryActivity.this, Locations.class);
+        Intent intent = new Intent(HistoryActivity.this, LocationsActivity.class);
         intent.putExtra(TIME_STAMP, timeStamp);
         startActivity(intent);
     }

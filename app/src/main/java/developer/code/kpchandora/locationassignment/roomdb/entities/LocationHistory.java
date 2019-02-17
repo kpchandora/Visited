@@ -5,14 +5,13 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
+import java.io.Serializable;
 import java.util.List;
 
-import developer.code.kpchandora.locationassignment.LoginActivity;
-import developer.code.kpchandora.locationassignment.MainActivity;
 import developer.code.kpchandora.locationassignment.roomdb.coverters.LocationHistoryConverter;
 
 @Entity(tableName = LocationHistory.LOCATION_HISTORY_TABLE_NAME)
-public class LocationHistory {
+public class LocationHistory implements Serializable{
 
     /*Name of location table*/
     public static final String LOCATION_HISTORY_TABLE_NAME = "location_history_table";

@@ -1,23 +1,24 @@
-package developer.code.kpchandora.locationassignment;
+package developer.code.kpchandora.locationassignment.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.RootAnimActivity;
 import developer.code.kpchandora.locationassignment.adapter.LocationAdapter;
 import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
-import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
-import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
-public class Locations extends RootAnimActivity {
+public class LocationsActivity extends RootAnimActivity {
 
+    private LocationHistory history;
+    private RelativeLayout mapsContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class Locations extends RootAnimActivity {
         setContentView(R.layout.activity_locations);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mapsContainer = findViewById(R.id.maps_container);
         RecyclerView locationsRecyclerView = findViewById(R.id.locations_recycler_view);
         locationsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -35,10 +37,17 @@ public class Locations extends RootAnimActivity {
         }
         LocationAdapter adapter = new LocationAdapter(this);
         locationsRecyclerView.setAdapter(adapter);
-        LocationHistory history = LocationDatabase.getInstance(getApplication()).historyDao().getSingleHistory(timeStamp);
+        history = LocationDatabase.getInstance(getApplication()).historyDao().getSingleHistory(timeStamp);
 
         adapter.setLocation(history.getLocationEntityList());
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.path_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -46,6 +55,10 @@ public class Locations extends RootAnimActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.show_path:
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.replace()
                 break;
         }
         return super.onOptionsItemSelected(item);

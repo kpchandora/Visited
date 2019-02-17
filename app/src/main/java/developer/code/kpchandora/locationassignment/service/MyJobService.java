@@ -1,13 +1,12 @@
 package developer.code.kpchandora.locationassignment.service;
 
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
-import developer.code.kpchandora.locationassignment.MainActivity;
+import developer.code.kpchandora.locationassignment.ui.MainActivity;
 import developer.code.kpchandora.locationassignment.receiver.ConnectivityReceiver;
 
 public class MyJobService extends JobService {

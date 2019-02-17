@@ -1,7 +1,10 @@
-package developer.code.kpchandora.locationassignment;
+package developer.code.kpchandora.locationassignment.ui;
 
 import android.os.Bundle;
 import android.widget.RelativeLayout;
+
+import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.RootAnimActivity;
 
 public class DetailsActivity extends RootAnimActivity {
 

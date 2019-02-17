@@ -1,8 +1,7 @@
-package developer.code.kpchandora.locationassignment;
+package developer.code.kpchandora.locationassignment.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.io.InvalidClassException;
+import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.RootAnimActivity;
 
 public class LoginActivity extends RootAnimActivity {
 
@@ -124,6 +124,7 @@ public class LoginActivity extends RootAnimActivity {
                     Log.i(TAG, "onActivityResult: ");
                     return;
                 }
+                Log.i(TAG, "Auth: " + account.getServerAuthCode());
                 firebaseAuthWithGoogle(account);
             } else {
                 Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();

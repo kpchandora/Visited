@@ -4,10 +4,12 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.io.Serializable;
+
 import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
 @Entity(tableName = LocationEntity.LOCATION_TABLE_NAME)
-public class LocationEntity {
+public class LocationEntity implements Serializable{
 
     /*Name of location table*/
     public static final String LOCATION_TABLE_NAME = "location_table";

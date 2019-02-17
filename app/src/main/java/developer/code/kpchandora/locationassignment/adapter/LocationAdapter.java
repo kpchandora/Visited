@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import developer.code.kpchandora.locationassignment.DetailsActivity;
+import developer.code.kpchandora.locationassignment.ui.DetailsActivity;
 import developer.code.kpchandora.locationassignment.R;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 

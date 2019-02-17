@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/LocationActivityStyle">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LocationActivityStyle" />
 
@@ -33,7 +33,7 @@
         </service>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,14 +43,14 @@
         </activity>
 
         <activity
-            android:name=".HistoryActivity"
+            android:name=".ui.HistoryActivity"
             android:label="@string/history_activity"
             android:theme="@style/HistoryActivityStyle" />
 
         <activity
-            android:name=".Locations"
+            android:name=".ui.LocationsActivity"
             android:theme="@style/LocationActivityStyle" />
-        <activity android:name=".DetailsActivity"/>
+        <activity android:name=".ui.DetailsActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

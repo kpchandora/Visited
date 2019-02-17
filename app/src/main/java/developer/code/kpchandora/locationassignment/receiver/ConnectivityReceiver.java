@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import developer.code.kpchandora.locationassignment.MainActivity;
 import developer.code.kpchandora.locationassignment.service.LocationService;
 
 public class ConnectivityReceiver extends BroadcastReceiver {

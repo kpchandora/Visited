@@ -1,13 +1,7 @@
 package developer.code.kpchandora.locationassignment.service;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +10,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -39,14 +32,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import developer.code.kpchandora.locationassignment.MainActivity;
+import developer.code.kpchandora.locationassignment.ui.MainActivity;
 import developer.code.kpchandora.locationassignment.R;
 import developer.code.kpchandora.locationassignment.receiver.ConnectivityReceiver;
 import developer.code.kpchandora.locationassignment.receiver.NotificationBroadcastReceiver;
 import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationHistory;
-import developer.code.kpchandora.locationassignment.roomdb.utils.Utils;
 
 public class LocationService extends Service {
 
@@ -180,6 +172,8 @@ public class LocationService extends Service {
         startForeground(1, builder.build());
 
     }
+
+
 
     @Nullable
     @Override

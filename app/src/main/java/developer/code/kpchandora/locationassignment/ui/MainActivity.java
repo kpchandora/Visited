@@ -1,33 +1,24 @@
-package developer.code.kpchandora.locationassignment;
+package developer.code.kpchandora.locationassignment.ui;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,16 +48,17 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import developer.code.kpchandora.locationassignment.MyApplication;
+import developer.code.kpchandora.locationassignment.R;
+import developer.code.kpchandora.locationassignment.RootAnimActivity;
 import developer.code.kpchandora.locationassignment.adapter.LocationAdapter;
 import developer.code.kpchandora.locationassignment.roomdb.database.LocationDatabase;
 import developer.code.kpchandora.locationassignment.roomdb.entities.LocationEntity;
@@ -312,7 +304,7 @@ public class MainActivity extends RootAnimActivity {
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-
+                            // TODO: 25/8/18
                         }
 
                         @Override
@@ -323,7 +315,7 @@ public class MainActivity extends RootAnimActivity {
                     .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                         @Override
                         public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+                            // TODO: 25/8/18
                         }
                     }).build();
             mGoogleApiClient.connect();

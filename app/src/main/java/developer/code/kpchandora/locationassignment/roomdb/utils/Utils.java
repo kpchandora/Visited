@@ -1,7 +1,6 @@
 package developer.code.kpchandora.locationassignment.roomdb.utils;
 
-import developer.code.kpchandora.locationassignment.LoginActivity;
-import developer.code.kpchandora.locationassignment.MainActivity;
+import developer.code.kpchandora.locationassignment.ui.LoginActivity;
 
 public class Utils {
     public static final String DATABASE_NAME ="location_db"+ LoginActivity.USER_KEY[0];

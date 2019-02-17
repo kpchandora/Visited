@@ -29,7 +29,7 @@ LocationDao {
     /**
      * Select all locations
      *
-     * @return A {@link List} of all the Locations in the table
+     * @return A {@link List} of all the LocationsActivity in the table
      */
     @Query("SELECT * FROM " + LocationEntity.LOCATION_TABLE_NAME + " ORDER BY " + LocationEntity.LOCATION_TABLE_ID + " DESC")
     LiveData<List<LocationEntity>> getAllLocations();
